@@ -1,8 +1,8 @@
-AZ-Splitter version 0.58
+AZ-Splitter version 0.60
 ========================
 
-This is object-oriented class for fast and simple splitting big files or
-strings with using little memory. As the same can be used for searching
+This is an object-oriented class for fast and simple splitting of big
+files or strings using little memory. Also can be used for searching
 data in files, but the main fuction is parsing big volume data.
 
 INSTALLATION

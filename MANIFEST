@@ -4,3 +4,4 @@ MANIFEST
 README
 t/AZ-Splitter.t
 lib/AZ/Splitter.pm
+lib/AZ/Splitter.pod

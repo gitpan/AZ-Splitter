@@ -1,16 +1,5 @@
-# Before `make install' is performed this script should be runnable with
-# `make test'. After `make install' it should work as `perl AZ-Splitter.t'
-
-#########################
-
-# change 'tests => 1' to 'tests => last_test_to_print';
 
 use Test;
 BEGIN { plan tests => 1 };
-use AZ::Splitter;
-ok(1); # If we made it this far, we're ok.
-
-#########################
-
-# Insert your test code below, the Test::More module is use()ed here so read
-# its man page ( perldoc Test::More ) for help writing this test script.
+use AZ::Splitter q(0.60);
+ok(1);

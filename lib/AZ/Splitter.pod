@@ -1,0 +1,218 @@
+=head1 NAME
+
+AZ::Splitter - Splitting and extracting data from file or string, with loading into memory in parts
+
+=head1 SYNOPSIS
+
+  use AZ::Splitter;    # With flags importing into current namespace
+  use AZ::Splitter (); # Access to flags from AZ:: namespace only
+
+  $s = AZ::Splitter->new(\*IN);
+  $s = AZ::Splitter->new(\*IN,$limitsize);
+  $s = AZ::Splitter->new(\*IN,$limitsize,$buffsize);
+  $s = AZ::Splitter->new(\*IN,$limitsize,$buffsize,s_2BUFF|s_UTFOK);
+  $s = AZ::Splitter->new(\$SCALAR,...); # Same for scalar variables
+
+  $s->read_to(\*OUT,$separator);
+  $s->read_to(\*OUT,$separator,$maxsize);
+  $s->read_to(\*OUT,$separator,$maxsize,s_APPEND|s_WEND|s_WCASE);
+  $s->read_to(\*OUT,\@separators,...) # Many separators
+  $s->read_to(\$SCALAR,...); # Also for scalar variables
+  $s->read_to(undef,...);    # Only rewind
+
+  $s->read_some(\*OUT);
+  $s->read_some(\*OUT,$maxsize);
+  $s->read_some(\*OUT,$maxsize,s_APPEND);
+  $s->read_some(\$SCALAR,...); # Also for scalar variables
+  $s->read_some(undef,...);    # Only rewind
+
+  $s->stat_rsize();
+  $s->stat_wsize();
+  $s->stat_match();
+  $s->stat_error();
+
+=head1 DESCRIPTION
+
+This is an object-oriented class for fast and simple splitting of
+big files or strings using little memory. Also can be used
+for searching data in files, but the main fuction is parsing big
+volume data.
+
+=head1 METHODS
+
+=over 4
+
+=item new(STREAM_IN,[SIZE_LIMIT,BUFF_SIZE,FLAGS])
+
+The constructor method instantiates a new AZ::Splitter object.
+
+STREAM_IN - is a reference to file stream, opened for reading,
+or reference to string.
+
+SIZE_LIMIT - limit size of input stream data in characters. If this
+argument is not defined or equal to -1, then all input stream
+data will be available for read.
+
+BUFF_SIZE - size of buffer in characters. If this argument is not
+defined or equal to -1, then will be used default buffer size
+32768 characters.
+
+FLAGS - 2 modificators are available in this method:
+
+=over 4
+
+s_2BUFF - use second buffer. Can really speed up search in case
+insensitive mode.
+
+s_UTFOK - disable utf8 data check in UTF-8 mode. Use this flag if
+you are absolutely sure, that your UTF-8 data is valid.
+
+=back
+
+=item read_to(STREAM_OUT,SEPARATORS,[MAX_SIZE,FLAGS])
+
+This method reads all data from input stream before first found
+separator, beginning from current position. Returns true value if
+found separator or end of stream expected at first time. Otherwise,
+or in case of reading error, will return false value.
+
+STREAM_OUT - is a reference to file stream, opened for writing,
+or reference to string. If another type of value (ex: undef), then
+data will be not stored.
+
+SEPARATORS - is a string-separator or reference to array with
+many separators.
+
+MAX_SIZE - size in characters. Defines, the maximum number of
+characters that must be stored in STREAM_OUT. If this argument not
+defined or equal to -1, then this method will be trying to store
+all readed data.
+
+FLAGS - 3 modificators are available in this method:
+
+=over 4
+
+s_APPEND - append data to STREAM_OUT if STREAM_OUT is a reference
+to string.
+
+s_WCASE - search in case insencitive mode.
+
+s_WEND - at the end of input stream returns only false value.
+Without this modificator, if end of stream expected at first time,
+then will be returned true value.
+
+=back
+
+=item read_some(STREAM_OUT,[MAX_SIZE,FLAGS])
+
+This method reads fixed number of characters from input stream
+beginning from current position. Returns true value, if any
+characters were read or end of input stream is not expected
+yet. Otherwise, or in case of reading error, will return false
+value.
+
+STREAM_OUT - same as in read_to() method.
+
+MAX_SIZE - limit size in characters, how many it is necessary
+to read. If this argument is not defined or equal to -1, then
+will be read all available data from input stream.
+
+FLAGS - only one modificator available:
+
+=over 4
+
+s_APPEND - same as in read_to() method.
+
+=back
+
+=item stat_wsize()
+
+This method returns quantity of characters from previous
+position and to found separator(or end of stream) after
+using method read_to(). After using method read_some() this
+method returns quantity of readed characters.
+
+=item stat_rsize()
+
+The same as previous method. Only returns quantity of
+successfuly stored characters.
+
+=item stat_match()
+
+After using method read_to() returns found separator.
+Otherwise returns empty string.
+
+=item stat_error()
+
+Returns error status. In any reading errors methods read_to()
+and read_some() immediately stops any operations, returns
+false status and sets up this parameter to true value.
+
+=back
+
+=head1 UTF-8 SUPPORT
+
+Fully supported when using perl version 5.8.1, or higher.
+Input stream, separators, and result reference(if this is file
+stream), must be in UTF-8 mode. If input stream will has
+malformed UTF-8 data, then reading from stream will
+be immediately stopped.
+
+=head1 WARNINGS
+
+Remember! This class is using block reading and before
+destruct class-object, you should work with input stream only
+through these class methods.
+
+In UTF-8 mode search without case sensitive is very slowly..
+It is because operation of changing case on UTF-8 data has
+slow speed.
+
+Remember, in UTF-8 mode all sizes of this module contain
+characters, not bytes!
+
+All flags exist in AZ:: namespace and you can disable import
+them to your namespace.
+
+=head1 EXAMPLES
+
+=head2 Reading configuration file:
+
+  my($fh,$stream,$line);
+
+  open($fh,"<","config.txt") or die $!;
+  $stream = AZ::Splitter->new($fh);
+
+  while ($stream->read_to(\$line,"\r\n"))
+  {
+      # Do something with $line
+  }
+  close($fh) or die $!;
+
+=head2 Find one of substrings in file without case sensitive:
+
+  my(@strings,$stream,$fh,$result);
+
+  # Initialize array of strings
+  @strings=("word1","word2","phrase 1","word3");
+
+  open($fh,"<","file.txt") or die $!;
+  $stream = AZ::Splitter->new($fh);
+
+  # Now, let trying to find one of substrings
+  $result = $stream->read_to(undef,\@strings,-1,s_WCASE|s_WEND);
+
+  if ($result) {
+      print "Found substring '",$stream->stat_match(),"'\n";
+  }
+  elsif ($stream->stat_error()) {
+      print "Fatal error during reading file!\n";
+  }
+  else {
+      print "Nothing found..\n";
+  }
+  close($fh) or die $!;
+
+=head1 AUTHOR
+
+Andrian Zubko aka Ondr, E<lt>ondr@mail.ruE<gt>
