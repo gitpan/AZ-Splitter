@@ -1,4 +1,4 @@
-AZ-Splitter version 0.60
+AZ-Splitter version 0.63
 ========================
 
 This is an object-oriented class for fast and simple splitting of big
@@ -16,4 +16,4 @@ To install this module type the following:
 
 AUTHOR
 
-Andrian Zubko aka Ondr, <ondr@mail.ru>
+Andrian Zubko aka Ondr, <ondr@cpan.org>

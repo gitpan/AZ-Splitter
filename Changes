@@ -13,3 +13,7 @@ Revision history for Perl extension AZ::Splitter.
 0.60  Thu Feb 24 01:32:00 2005
 	- bug: under mod_perl error during reading from STDIN. Fixed.
 	- code is optimized
+
+0.63  Sat Mar 26 07:28:00 2005
+	- one not serious bug fixed.
+	- code is optimized
