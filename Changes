@@ -1,0 +1,11 @@
+Revision history for Perl extension AZ::Splitter.
+
+0.01  Mon Dec 02 13:10:52 2004
+	- original version; created by h2xs 1.23 with options
+		-AX -b5.5.0 AZ::Splitter
+
+0.4  Fri Dec 16 02:05:00 2004
+	- first working version
+
+0.58 Wen Jan 19 07:24:00 2005
+	- first working fine version
