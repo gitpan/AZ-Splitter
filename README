@@ -1,19 +1,4 @@
-AZ-Splitter version 0.63
+AZ-Splitter version 0.64
 ========================
 
-This is an object-oriented class for fast and simple splitting of big
-files or strings using little memory. Also can be used for searching
-data in files, but the main fuction is parsing big volume data.
-
-INSTALLATION
-
-To install this module type the following:
-
-   perl Makefile.PL
-   make
-   make test
-   make install
-
-AUTHOR
-
-Andrian Zubko aka Ondr, <ondr@cpan.org>
+This module was deprecated.

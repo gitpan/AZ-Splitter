@@ -17,3 +17,6 @@ Revision history for Perl extension AZ::Splitter.
 0.63  Sat Mar 26 07:28:00 2005
 	- one not serious bug fixed.
 	- code is optimized
+
+0.64  Wed Apr 27 10:34:00 2005
+	- this module was deprecated.
